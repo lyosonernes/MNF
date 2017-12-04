@@ -5,7 +5,7 @@
 
 class BlackScholes
 {
-
+	
 public:
 	BlackScholes();
 	BlackScholes(double K, double r, double sig, double T);

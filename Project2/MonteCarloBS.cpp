@@ -28,6 +28,7 @@ std::pair<double,double> MonteCarloBS::CalcCall(int N, int method = 0, std::vect
 	double Cmxcarre = 0;
 	double Cmycarre = 0;
 	double sr = 0;
+	double cetoile = 0;
 	std::pair <double, double> Ev(0, 0);
 	std::pair <double, double> Eva(0, 0);
 
@@ -72,13 +73,14 @@ std::pair<double,double> MonteCarloBS::CalcCall(int N, int method = 0, std::vect
 				switch (VRC)
 				{
 				case 0: // Variante Z = ST
-					sr = calcX((method*VR/2) + VRC, Ti, c);
+
+					sr = calcX((method*(VR/2))*10 + VRC, Ti, c);
 					break;
 				case 1: // Variante Z = 1/N(somme Sti)
-					//sr = calcX((method*VR/2) + VRC, Ti, c);
+					sr = calcX((method*(VR/2))*10 + VRC, Ti, c);
 					break;
 				case 2: // Variante Z = exp(-rT)*(ST-K)+
-					sr = calcX((method*VR / 2) + VRC, Ti, c);
+					sr = calcX((method*(VR / 2))*10 + VRC, Ti, c);
 					//sr = calcX(method, St, M) + c*(exp(-mbs_r*mbs_T)*std::max(0.0, 0.0) - mbsmod1.CalculBS(0, mbs_Sz));
 					break;
 				default:
@@ -181,6 +183,7 @@ double MonteCarloBS::calcX(int method, std::vector<double> Ti, double M = 0)
 {
 	PriceA ps1 = PriceA(mbs_Sz, mbs_r, mbs_sig);
 	std::vector<double> St;
+	double esp_z = 0;
 	switch (method)
 	{
 		case 0 : //Call Européen
@@ -194,12 +197,16 @@ double MonteCarloBS::calcX(int method, std::vector<double> Ti, double M = 0)
 		case 10 : //Call asiatique VR condition 1 + VR*10*method + VRC
 			St.resize(Ti.size());
 			St = ps1.CalculSt(Ti);
-			return exp(-mbs_r*mbs_T)*calcPayoffAS(St) + M*1;
+			return exp(-mbs_r*mbs_T)*calcPayoffAS(St) + M*(St[Ti.size() -1] - mbs_Sz*exp(mbs_r*mbs_T));
 			break;
 		case 11 : //Call asiatique VR condition 2 + VR*10*method + VRC
 			St.resize(Ti.size());
 			St = ps1.CalculSt(Ti);
-			return exp(-mbs_r*mbs_T)*calcPayoffAS(St) + M*(std::accumulate(St.begin(), St.end(), 0.0)/Ti.size());
+			for (int i = 0; i < Ti.size(); i++) {
+				esp_z = esp_z + mbs_Sz*exp(mbs_r*Ti[i]);
+			}
+			esp_z = esp_z / Ti.size();
+			return exp(-mbs_r*mbs_T)*calcPayoffAS(St) + M*(std::accumulate(St.begin(), St.end(), 0.0)/Ti.size() - esp_z);
 			break;
 		case 12 : //Call asiatique VR condition 3 + VR*10*method + VRC
 			St.resize(Ti.size());
@@ -264,4 +271,30 @@ double MonteCarloBS::maxCondBrow(double ST)
 }
 
 
+double MonteCarloBS::calcC(int P, std::vector<double> Ti) {
+	PriceA ps1 = PriceA(mbs_Sz, mbs_r, mbs_sig);
+	std::vector<double> St;
+	St.resize(Ti.size());
+	std::vector<double> H;
+	H.resize(P);
+	std::vector<double> Z;
+	Z.resize(P);
+	for (int p = 0; p < P; p++) {
+		St = ps1.CalculSt(Ti);
+		H[p] = exp(-mbs_r*mbs_T)*calcPayoffAS(St);
+		Z[p] = St[Ti.size() - 1];
+		//Z[p] = std::accumulate(St.begin(), St.end(), 0.0) / Ti.size();
+	}
+	double Hm = std::accumulate(H.begin(), H.end(), 0.0) / P;
+	double Zm = std::accumulate(Z.begin(), Z.end(), 0.0) / P;
+	double VZ = 0;
 
+	double c = 0;
+	for (int i = 0; i < P; i++) {
+		c = c + (H[i] - Hm)*(Z[i] - Zm);
+	}
+	for (int j = 0; j < P; j++) {
+		VZ = VZ + pow((Z[j] - Zm),2);
+	}
+	return c / VZ;
+}

@@ -81,10 +81,11 @@ int main()
 
 
 	// Export montecarlo in csv
+	double c = - mcbs1.calcC(1000, Ti);
 	ofstream myfile;
-	myfile.open("mcbsOptionEURVant2.csv");
+	myfile.open("mcbsOptionASRVC3.csv");
 	for (int i = 10; i < 1000; i++) {
-		std::pair<double, double> Ev = mcbs1.CalcCall(i, 0, Ti, 0, 1, 0, 0);
+		std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c, 0);
 		myfile << i;
 		myfile << ";";
 		myfile << std::get<0>(Ev);
