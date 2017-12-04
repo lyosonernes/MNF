@@ -3,6 +3,8 @@
 #include "Solver.h"
 #include "MonteCarloBS.h"
 #include "PriceA.h"
+#include "mathspp.h"
+#include "Copule.h"
 #include <vector>
 #include <random>
 #include <iostream>
@@ -32,10 +34,10 @@ int main()
 	PriceA ps1 = PriceA(Si, sig, r);
 
 
-	// Initialisation d'un vecteur pour calculer BS
-	std::vector < std::vector<double>> Ubs;
-	Ubs.resize(M, std::vector<double>(N, 0));
-	Ubs = mod1.CalculBSU(N, M, L);
+	//// Initialisation d'un vecteur pour calculer BS
+	//std::vector < std::vector<double>> Ubs;
+	//Ubs.resize(M, std::vector<double>(N, 0));
+	//Ubs = mod1.CalculBSU(N, M, L);
 
 	//// Initialisation d'un vecteur pour calculer EE
 	//std::vector < std::vector<double>> Uee;
@@ -81,18 +83,18 @@ int main()
 
 
 	// Export montecarlo in csv
-	double c = - mcbs1.calcC(1000, Ti);
-	ofstream myfile;
-	myfile.open("mcbsOptionASRVC3.csv");
-	for (int i = 10; i < 1000; i++) {
-		std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c, 0);
-		myfile << i;
-		myfile << ";";
-		myfile << std::get<0>(Ev);
-		myfile << ";";
-		myfile << std::get<1>(Ev);
-		myfile << "\n";
-	}
+	//double c = - mcbs1.calcC(1000, Ti);
+	//ofstream myfile;
+	//myfile.open("mcbsOptionASRVC3.csv");
+	//for (int i = 10; i < 1000; i++) {
+	//	std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c, 0);
+	//	myfile << i;
+	//	myfile << ";";
+	//	myfile << std::get<0>(Ev);
+	//	myfile << ";";
+	//	myfile << std::get<1>(Ev);
+	//	myfile << "\n";
+	//}
 
 	//// Export montecarlo in csv
 	//ofstream myfile2;
@@ -154,6 +156,39 @@ int main()
 	//	myfile << St[i];
 	//	myfile << "\n";
 	//}
+
+	//mathspp math = mathspp();
+
+	//std::vector<std::vector<double>> A;
+	//A.resize(3, std::vector<double>(3, 0));
+
+	//A[0][0] = 1;
+	//A[0][1] = 0.2;
+	//A[0][2] = 0.2;
+	//A[1][0] = 0.2;
+	//A[1][1] = 1;
+	//A[1][2] = 0.2;
+	//A[2][0] = 0.2;
+	//A[2][1] = 0.2;
+	//A[2][2] = 1;
+
+	//std::vector<std::vector<double>> C;
+	////C.resize(2, std::vector<double>(2, 0));
+
+	//C = math.DecCholesky(A);
+
+	// Export copule gaussien in csv
+	Copule cop = Copule();
+	ofstream myfile;
+	myfile.open("copulegauss1.csv");
+	for (int i = 0; i < 1000; i++) {
+		std::vector<double> Ev = cop.gaussien(0.9, 2);
+		myfile << Ev[0];
+		myfile << ";";
+		myfile << Ev[1];
+		myfile << "\n";
+	}
+
 
 	double a = mod1.CalculBS(0, Si);
 	cout << mod1.CalculBS(0, Si) << endl;
