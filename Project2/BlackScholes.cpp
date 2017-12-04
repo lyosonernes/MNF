@@ -35,7 +35,7 @@ float BlackScholes::CalculBS(double t, double Si)
 		else return Si - bs_K*exp(-bs_r*(bs_T - t));
 	}
 
-	// Si on demande le prix au temps du strike, selon le signe de ST-K, on retourne le strike ou 0
+	// Si on demande le prix au temps du strike, selon le signe de ST-K, on retourne le strike ou 0.
 	if (fabs(bs_T - t)<1.e-14)
 	{
 		if (Si < bs_K)return 0.;
