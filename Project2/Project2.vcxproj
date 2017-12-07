@@ -20,16 +20,24 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlackScholes.cpp" />
+    <ClCompile Include="Copule.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mathspp.cpp" />
     <ClCompile Include="MonteCarloBS.cpp" />
     <ClCompile Include="PriceA.cpp" />
     <ClCompile Include="Solver.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackScholes.h" />
+    <ClInclude Include="Copule.h" />
+    <ClInclude Include="mathspp.h" />
     <ClInclude Include="MonteCarloBS.h" />
     <ClInclude Include="PriceA.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Solver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PricerCallEU.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
