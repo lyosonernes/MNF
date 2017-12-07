@@ -56,7 +56,7 @@ std::vector<double> Copule::gaussien(double rho, int n)
 	std::vector<double> Y(n);
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < n; j++) {
-			Y[i] += L[j][i] * Z[i];
+			Y[i] += L[j][i] * Z[j];
 		}
 	}
 

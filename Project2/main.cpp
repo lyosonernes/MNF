@@ -180,9 +180,9 @@ int main()
 	// Export copule gaussien in csv
 	Copule cop = Copule();
 	ofstream myfile;
-	myfile.open("copulegauss1.csv");
-	for (int i = 0; i < 1000; i++) {
-		std::vector<double> Ev = cop.gaussien(0.9, 2);
+	myfile.open("copulegauss0.8n.csv");
+	for (int i = 0; i < 500; i++) {
+		std::vector<double> Ev = cop.gaussien(-0.8, 2);
 		myfile << Ev[0];
 		myfile << ";";
 		myfile << Ev[1];
