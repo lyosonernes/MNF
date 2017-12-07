@@ -30,15 +30,12 @@
     <ClCompile Include="PriceA.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="mathspp.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Copule.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-=======
->>>>>>> 9e26eece1df1cb507e0da31d276d3920816b2d5b
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BlackScholes.h">
@@ -53,7 +50,6 @@
     <ClInclude Include="PriceA.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="mathspp.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
@@ -68,7 +64,5 @@
     <ResourceCompile Include="PricerCallEU.rc">
       <Filter>Fichiers de ressources</Filter>
     </ResourceCompile>
-=======
->>>>>>> 9e26eece1df1cb507e0da31d276d3920816b2d5b
   </ItemGroup>
 </Project>
