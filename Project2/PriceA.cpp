@@ -29,7 +29,6 @@ std::vector<double> PriceA::CalculSt(std::vector<double> Ti)
 	for (int i = 1; i < length; i++) {
 		double Z = distribution(generator);
 		St[i] = St[i - 1] * exp((ps_r - ps_sig*ps_sig / 2)*(Ti[i] - Ti[i - 1]) + ps_sig*sqrt(Ti[i] - Ti[i - 1])*Z);
-		double test = St[i];
 	}
 
 	return St;

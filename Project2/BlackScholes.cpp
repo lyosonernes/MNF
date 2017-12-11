@@ -52,6 +52,36 @@ float BlackScholes::CalculBS(double t, double Si)
 
 }
 
+float BlackScholes::CalculBS(double t, double Si,double sig)
+{
+
+	// si le prix de l'actif est nul, la valeur de l'option est nulle
+	if (Si < 1.e-14) return 0;
+
+	// Si sigma est null, nous devons selon le signe de d1 et d2 retourner 0
+	if (sig < 1.e-14)
+	{
+		if (Si < bs_K*exp(-bs_r*(bs_T - t)))return 0.;
+		else return Si - bs_K*exp(-bs_r*(bs_T - t));
+	}
+
+	// Si on demande le prix au temps du strike, selon le signe de ST-K, on retourne le strike ou 0.
+	if (fabs(bs_T - t)<1.e-14)
+	{
+		if (Si < bs_K)return 0.;
+		else return Si - bs_K;
+	}
+
+	//Calcul de d1 et d2
+	bs_d1 = Calculbs_d1(bs_K, bs_r, sig, bs_T, Si, t);
+	bs_d2 = Calculbs_d2(bs_K, bs_r, sig, bs_T, Si, t);
+	double a = (1 + erf(bs_d1 / sqrt(2))) / 2;
+	double b = (1 + erf(bs_d2 / sqrt(2))) / 2;
+	return Si*a - bs_K*exp(-bs_r*(bs_T - t))*b;
+
+
+}
+
 std::vector<std::vector<double>> BlackScholes::CalculBSU(int N, int M, double L)
 {
 
@@ -80,6 +110,22 @@ std::vector<std::vector<double>> BlackScholes::CalculBSU(int N, int M, double L)
 	}
 
 	return U;
+}
+
+double BlackScholes::CalcVolImpli(double S0, double PC, double sig1, double sig2)
+{
+	double volimp = (sig1 + sig2) / 2;
+	double cbs = CalculBS(bs_T, S0, volimp);
+	while (abs(cbs - PC) > 1.e-10) {
+		if (PC > cbs) {
+			volimp = (volimp + sig2) / 2;
+		}
+		else {
+			volimp = (sig1 + volimp) / 2;
+		}
+		cbs = CalculBS(bs_T, S0, volimp);
+	}
+	return volimp;
 }
 
 

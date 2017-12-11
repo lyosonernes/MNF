@@ -10,6 +10,10 @@
 #include <iostream>
 #include <fstream>
 
+// FTD : T = 5
+// Lambda i 0.05 
+// N = 5,10,...
+
 using namespace std;
 
 int main()
@@ -21,8 +25,8 @@ int main()
 	double Si = 150;
 	double t = 0.5;
 	double L = log(1000);
-	int N = 100;
-	int M = 10000;
+	int N = 10000;
+	int M = 100;
 
 	const int length = 20;
 
@@ -31,7 +35,7 @@ int main()
 	BlackScholes mod1 = BlackScholes(K, r, sig, T);
 	Solver m1 = Solver(L, T, sig, r, K);
 	MonteCarloBS mcbs1 = MonteCarloBS(K, r, sig, T, Si);
-	PriceA ps1 = PriceA(Si, sig, r);
+	PriceA ps1 = PriceA(Si, r, sig);
 
 
 	//// Initialisation d'un vecteur pour calculer BS
@@ -75,11 +79,9 @@ int main()
 		Ti[i] = T*i*x;
 	}
 
-
-
-	//std::vector <double > T(3);
-	//T[0] = 0.3;
-	//std::vector <double > ST = mcbs1.CalculSt();
+	std::vector<double> St;
+	St.resize(Ti.size());
+	St = ps1.CalculSt(Ti);
 
 
 	// Export montecarlo in csv
@@ -177,21 +179,41 @@ int main()
 
 	//C = math.DecCholesky(A);
 
-	// Export copule gaussien in csv
-	Copule cop = Copule();
-	ofstream myfile;
-	myfile.open("copulegauss0.8n.csv");
-	for (int i = 0; i < 500; i++) {
-		std::vector<double> Ev = cop.gaussien(-0.8, 2);
-		myfile << Ev[0];
-		myfile << ";";
-		myfile << Ev[1];
-		myfile << "\n";
-	}
+	//// Export copule gaussien in csv
+	//Copule cop = Copule();
+	//ofstream myfile;
+	//myfile.open("copulegauss0.8n.csv");
+	//for (int i = 0; i < 500; i++) {
+	//	std::vector<double> Ev = cop.gaussien(-0.8, 2);
+	//	myfile << Ev[0];
+	//	myfile << ";";
+	//	myfile << Ev[1];
+	//	myfile << "\n";
+	//}
 
 
-	double a = mod1.CalculBS(0, Si);
-	cout << mod1.CalculBS(0, Si) << endl;
+	//double a = mod1.CalculBS(0, Si);
+	//cout << "5 , 10, 50 , 100 , 200 , 500 , 1000" << endl;
+	//cout << "error EM" << endl;
+	//cout << m1.ErrorDiscXtEM(5, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEM(10, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEM(50, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEM(100, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEM(200, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEM(500, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEM(1000, Si, N) << endl;
+	//cout << "error Mils" << endl;
+	//cout << m1.ErrorDiscXtMils(5, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMils(10, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMils(50, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMils(100, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMils(200, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMils(500, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMils(1000, Si, N) << endl;
+	//cout << m1.CalcStHeston(500, Si, 0.2, 0.2, 1, 0.5, -0.70) << endl;
 
+	cout << mod1.CalculBS(T, Si) << endl;
+	cout << mod1.CalcVolImpli(Si, 55, 0.1, 0.5) << endl;
+	cout << "attente" << endl;
 	return 0;
 }

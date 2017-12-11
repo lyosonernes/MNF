@@ -1,8 +1,10 @@
 #include "Solver.h"
+#include "PriceA.h"
 #include <iterator>
 #include <vector>
 #include <math.h>
 #include <algorithm> //std::max
+#include <random>
 
 
 Solver::Solver(double L, double T, double sig, double r,double K)
@@ -167,3 +169,129 @@ std::vector < std::vector<double>> Solver::CalculEulerI(int N, int M)
 	}
 	return U;
 }
+
+double Solver::DiscXtEM(int M, double X0)
+{
+	double XT = X0;
+	double dt = S_T / M;
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z = 0;
+	
+	for (int i = 0; i < M; i++)
+	{
+		Z = distribution(generator);
+		XT = XT + S_r*XT*dt + S_sig*XT*sqrt(dt)*Z ;
+	}
+
+
+	return XT;
+}
+
+double Solver::DiscXtMils(int M, double X0)
+{
+	double XT = X0;
+	double dt = S_T / M;
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z = 0;
+
+	for (int i = 1; i <= M; i++)
+	{
+
+		Z = distribution(generator);
+		XT = XT + S_r*XT*dt + S_sig*XT*sqrt(dt)*Z + 0.5*S_sig*S_sig*XT*dt*(Z*Z-1);
+	}
+
+	return XT;
+}
+
+double Solver::ErrorDiscXtEM(int M, double X0, int N)
+{
+	double XT = X0;
+	double Xdirect = X0;
+	double dt = S_T / M;
+
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z = 0;
+	double errorn = 0;
+	double error = 0;
+
+	for (int i = 0; i < N; i++) {
+		XT = X0;
+		Xdirect = X0;
+		errorn = 0;
+		for (int j = 0; j < M; j++)
+		{
+			Z = distribution(generator);
+			XT = XT + S_r*XT*dt + S_sig*XT*sqrt(dt)*Z;
+			Xdirect = Xdirect * exp((S_r - S_sig*S_sig / 2)*(dt)+S_sig*sqrt(dt)*Z);
+			errorn = std::max(errorn, abs(XT - Xdirect));
+		}
+		error = error + errorn;
+	}
+
+	error = error / N;
+	return error;
+}
+
+double Solver::ErrorDiscXtMils(int M, double X0, int N)
+{
+	double XT = X0;
+	double Xdirect = X0;
+	double dt = S_T / M;
+
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z = 0;
+	double errorn = 0;
+	double error = 0;
+
+	for (int i = 0; i < N; i++) {
+		XT = X0;
+		Xdirect = X0;
+		errorn = 0;
+		for (int j = 0; j < M; j++)
+		{
+			Z = distribution(generator);
+			XT = XT + S_r*XT*dt + S_sig*XT*sqrt(dt)*Z + 0.5*S_sig*S_sig*XT*dt*(pow(Z,2) - 1);
+			Xdirect = Xdirect * exp((S_r - S_sig*S_sig / 2)*(dt)+S_sig*sqrt(dt)*Z);
+			errorn = std::max(errorn, abs(XT - Xdirect));
+		}
+		error = error + errorn;
+	}
+
+	error = error / N;
+	return error;
+}
+
+double Solver::CalcStHeston(int M, double X0, double v0, double vbarre, double lambda, double heta, double rho)
+{
+	double XT = log(X0);
+	double vt = v0;
+	double dt = S_T / M;
+	
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z1 = 0;
+	double Z2 = 0;
+
+	for (int i = 0; i < M; i++)
+	{
+		Z1 = distribution(generator);
+		Z2 = rho*Z1 + sqrt(1 - pow(rho,2))*distribution(generator);
+		XT = XT + (S_r - vt / 2)*dt + sqrt(vt)*sqrt(dt)*Z1;
+		vt = vt - lambda*(std::max(0.0, vt) - vbarre)*dt + heta*sqrt(std::max(0.0, vt))*dt*Z2;
+	}
+
+
+
+	return exp(XT);
+}
+

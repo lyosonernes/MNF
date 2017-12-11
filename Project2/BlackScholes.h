@@ -11,7 +11,9 @@ public:
 	BlackScholes(double K, double r, double sig, double T);
 	~BlackScholes();
 	float CalculBS(double t, double Si);
+	float CalculBS(double t, double Si, double sig);
 	std::vector < std::vector<double>> CalculBSU(int N, int M, double L);
+	double CalcVolImpli(double S0, double PC, double sig1, double sig2);
 
 private:
 	double Calculbs_d1(double K, double r, double sig, double T, double Si, double t);
