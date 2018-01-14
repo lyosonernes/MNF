@@ -7,7 +7,9 @@ class MonteCarloBS
 public:
 	MonteCarloBS(double K, double r, double sig, double T,double Sz);
 	std::pair <double,double> CalcCall(int N, int method, std::vector<double> Ti, double M, int VR, double c, int VRC);
-	double calcC(int P, std::vector<double> Ti);
+	double calcC0(int P, std::vector<double> Ti);
+	double calcC1(int P, std::vector<double> Ti);
+	double calcC2(int P, std::vector<double> Ti);
 	~MonteCarloBS();
 
 private:

@@ -14,7 +14,10 @@ public:
 	double DiscXtMils(int M, double X0);
 	double ErrorDiscXtEM(int M, double X0, int N);
 	double ErrorDiscXtMils(int M, double X0, int N);
+	double ErrorDiscXtEMf(int M, double X0, int N);
+	double ErrorDiscXtMilsf(int M, double X0, int N);
 	double CalcStHeston(int M, double X0, double v0, double vbarre, double lambda, double heta, double rho);
+	double MCHeston(int N, int M, double X0, double v0, double vbarre, double lambda, double heta, double rho, double K);
 
 private:
 	double S_Long;

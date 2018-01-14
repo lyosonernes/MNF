@@ -285,13 +285,90 @@ double Solver::CalcStHeston(int M, double X0, double v0, double vbarre, double l
 	for (int i = 0; i < M; i++)
 	{
 		Z1 = distribution(generator);
-		Z2 = rho*Z1 + sqrt(1 - pow(rho,2))*distribution(generator);
-		XT = XT + (S_r - vt / 2)*dt + sqrt(vt)*sqrt(dt)*Z1;
-		vt = vt - lambda*(std::max(0.0, vt) - vbarre)*dt + heta*sqrt(std::max(0.0, vt))*dt*Z2;
+		Z2 = Z1*rho + sqrt(1-rho*rho)*distribution(generator);
+ 		XT = XT + (S_r - vt / 2)*dt + sqrt(vt)*sqrt(dt)*Z1;
+		vt = vt - lambda*(vt - vbarre)*dt + heta*sqrt(vt)*sqrt(dt)*Z2;
+		vt = abs(vt);
 	}
-
-
 
 	return exp(XT);
 }
 
+double Solver::MCHeston(int N, int M, double X0, double v0, double vbarre, double lambda, double heta, double rho, double K) {
+
+	double StH = 0;
+	double m = 0;
+
+	for (int i = 0; i < N; i++)
+	{
+		StH = CalcStHeston(M, X0, v0, vbarre, lambda, heta, rho);
+		m = m + exp(-S_r*S_T)*std::max(StH - K,0.00);
+	
+	}
+	m = m / N;
+	return m;
+}
+
+double Solver::ErrorDiscXtEMf(int M, double X0, int N)
+{
+	double XT = X0;
+	double Xdirect = X0;
+	double dt = S_T / M;
+
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z = 0;
+	double espnd = 0;
+	double espd = 0;
+
+	for (int i = 0; i < N; i++) {
+		XT = X0;
+		Xdirect = X0;
+		for (int j = 0; j < M; j++)
+		{
+			Z = distribution(generator);
+			XT = XT + S_r*XT*dt + S_sig*XT*sqrt(dt)*Z;
+			Xdirect = Xdirect * exp((S_r - S_sig*S_sig / 2)*(dt)+S_sig*sqrt(dt)*Z);
+		}
+		
+		espd = espd + exp(-S_r*S_T)*std::max(Xdirect - S_K, 0.0);
+		espnd = espnd + exp(-S_r*S_T)*std::max(XT - S_K, 0.0);
+
+	}
+	espd = espd / N;
+	espnd = espnd / N;
+	return abs(espd-espnd);
+}
+
+double Solver::ErrorDiscXtMilsf(int M, double X0, int N)
+{
+	double XT = X0;
+	double Xdirect = X0;
+	double dt = S_T / M;
+
+	std::random_device rd;
+	std::default_random_engine generator(rd());
+	std::normal_distribution<double> distribution(0, 1);
+	double Z = 0;
+	double espnd = 0;
+	double espd = 0;
+
+	for (int i = 0; i < N; i++) {
+		XT = X0;
+		Xdirect = X0;
+		for (int j = 0; j < M; j++)
+		{
+			Z = distribution(generator);
+			XT = XT + S_r*XT*dt + S_sig*XT*sqrt(dt)*Z + 0.5*S_sig*S_sig*XT*dt*(pow(Z, 2) - 1);
+			Xdirect = Xdirect * exp((S_r - S_sig*S_sig / 2)*(dt)+S_sig*sqrt(dt)*Z);
+		}
+		espd = espd + exp(-S_r*S_T)*std::max(Xdirect - S_K, 0.0);
+		espnd = espnd + exp(-S_r*S_T)*std::max(XT - S_K, 0.0);
+	}
+
+	espd = espd / N;
+	espnd = espnd / N;
+	return abs(espd - espnd);
+
+}

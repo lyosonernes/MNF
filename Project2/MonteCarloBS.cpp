@@ -271,7 +271,7 @@ double MonteCarloBS::maxCondBrow(double ST)
 }
 
 
-double MonteCarloBS::calcC(int P, std::vector<double> Ti) {
+double MonteCarloBS::calcC0(int P, std::vector<double> Ti) {
 	PriceA ps1 = PriceA(mbs_Sz, mbs_r, mbs_sig);
 	std::vector<double> St;
 	St.resize(Ti.size());
@@ -295,6 +295,62 @@ double MonteCarloBS::calcC(int P, std::vector<double> Ti) {
 	}
 	for (int j = 0; j < P; j++) {
 		VZ = VZ + pow((Z[j] - Zm),2);
+	}
+	return c / VZ;
+}
+
+
+double MonteCarloBS::calcC1(int P, std::vector<double> Ti) {
+	PriceA ps1 = PriceA(mbs_Sz, mbs_r, mbs_sig);
+	std::vector<double> St;
+	St.resize(Ti.size());
+	std::vector<double> H;
+	H.resize(P);
+	std::vector<double> Z;
+	Z.resize(P);
+	for (int p = 0; p < P; p++) {
+		St = ps1.CalculSt(Ti);
+		H[p] = exp(-mbs_r*mbs_T)*calcPayoffAS(St);
+		//Z[p] = St[Ti.size() - 1];
+		Z[p] = std::accumulate(St.begin(), St.end(), 0.0) / Ti.size();
+	}
+	double Hm = std::accumulate(H.begin(), H.end(), 0.0) / P;
+	double Zm = std::accumulate(Z.begin(), Z.end(), 0.0) / P;
+	double VZ = 0;
+
+	double c = 0;
+	for (int i = 0; i < P; i++) {
+		c = c + (H[i] - Hm)*(Z[i] - Zm);
+	}
+	for (int j = 0; j < P; j++) {
+		VZ = VZ + pow((Z[j] - Zm), 2);
+	}
+	return c / VZ;
+}
+
+double MonteCarloBS::calcC2(int P, std::vector<double> Ti) {
+	PriceA ps1 = PriceA(mbs_Sz, mbs_r, mbs_sig);
+	std::vector<double> St;
+	St.resize(Ti.size());
+	std::vector<double> H;
+	H.resize(P);
+	std::vector<double> Z;
+	Z.resize(P);
+	for (int p = 0; p < P; p++) {
+		St = ps1.CalculSt(Ti);
+		H[p] = exp(-mbs_r*mbs_T)*calcPayoffAS(St);
+		Z[p] = exp(-mbs_r*mbs_T)*std::max(0.0, St[Ti.size() - 1] - mbs_K);
+	}
+	double Hm = std::accumulate(H.begin(), H.end(), 0.0) / P;
+	double Zm = std::accumulate(Z.begin(), Z.end(), 0.0) / P;
+	double VZ = 0;
+
+	double c = 0;
+	for (int i = 0; i < P; i++) {
+		c = c + (H[i] - Hm)*(Z[i] - Zm);
+	}
+	for (int j = 0; j < P; j++) {
+		VZ = VZ + pow((Z[j] - Zm), 2);
 	}
 	return c / VZ;
 }

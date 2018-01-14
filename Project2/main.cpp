@@ -22,11 +22,11 @@ int main()
 	double r = 0.05; //0.05
 	double sig = 0.2;
 	double T = 1;
-	double Si = 150;
+	double Si = 100;
 	double t = 0.5;
 	double L = log(1000);
-	int N = 10000;
-	int M = 100;
+	int N = 100000;
+	int M = 1000;
 
 	const int length = 20;
 
@@ -55,9 +55,9 @@ int main()
 	//Uei = m1.CalculEulerI(N, M);
 
 
-	//// Export U in Csv
+	//// Export Ubs in Csv
 	//ofstream myfile;
-	//myfile.open("eulerexpliciteM5N100.csv");
+	//myfile.open("bsM1000N1(.csv");
 	//for (int i = 0; i < N; i++) {
 	//	myfile << exp(-L + i*(2 * L / N));
 	//	myfile << ";";
@@ -68,6 +68,18 @@ int main()
 	//	myfile << "\n";
 	//}
 
+	//// Export Uee in Csv
+	//ofstream myfile2;
+	//myfile2.open("eulerexpliciteM1000N15.csv");
+	//for (int i = 0; i < N; i++) {
+	//	myfile2 << exp(-L + i*(2 * L / N));
+	//	myfile2 << ";";
+	//	for (int j = 0; j < M; j++) {
+	//		myfile2 << Uee[j][i];
+	//		myfile2 << ";";
+	//	}
+	//	myfile2 << "\n";
+	//}
 
 	// Création du vecteur Ti
 
@@ -79,23 +91,52 @@ int main()
 		Ti[i] = T*i*x;
 	}
 
-	std::vector<double> St;
-	St.resize(Ti.size());
-	St = ps1.CalculSt(Ti);
+	//std::vector<double> St;
+	//St.resize(Ti.size());
+	//St = ps1.CalculSt(Ti);
 
 
-	// Export montecarlo in csv
-	//double c = - mcbs1.calcC(1000, Ti);
+	//// Export montecarlo in csv
+	//double c0 = - mcbs1.calcC0(1000, Ti);
 	//ofstream myfile;
-	//myfile.open("mcbsOptionASRVC3.csv");
-	//for (int i = 10; i < 1000; i++) {
-	//	std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c, 0);
+	//myfile.open("mcbsOptionASRVC0.csv");
+	//for (int i = 10; i < 15; i++) {
+	//	std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c0, 0);
 	//	myfile << i;
 	//	myfile << ";";
 	//	myfile << std::get<0>(Ev);
 	//	myfile << ";";
 	//	myfile << std::get<1>(Ev);
 	//	myfile << "\n";
+	//}
+
+	//// Export montecarlo in csv
+	////double c1 = -mcbs1.calcC1(1000, Ti);
+	//double c1 = -0.46;
+	//ofstream myfile2;
+	//myfile2.open("mcbsOptionASRVC1.csv");
+	//for (int i = 10; i < 15; i++) {
+	//	std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c1, 1);
+	//	myfile2 << i;
+	//	myfile2 << ";";
+	//	myfile2 << std::get<0>(Ev);
+	//	myfile2 << ";";
+	//	myfile2 << std::get<1>(Ev);
+	//	myfile2 << "\n";
+	//}
+
+	//// Export montecarlo in csv
+	//double c2 = -mcbs1.calcC2(1000, Ti);
+	//ofstream myfile3;
+	//myfile3.open("mcbsOptionASRVC2.csv");
+	//for (int i = 10; i < 15; i++) {
+	//	std::pair<double, double> Ev = mcbs1.CalcCall(i, 1, Ti, 0, 2, c2, 2);
+	//	myfile3 << i;
+	//	myfile3 << ";";
+	//	myfile3 << std::get<0>(Ev);
+	//	myfile3 << ";";
+	//	myfile3 << std::get<1>(Ev);
+	//	myfile3 << "\n";
 	//}
 
 	//// Export montecarlo in csv
@@ -193,27 +234,29 @@ int main()
 
 
 	//double a = mod1.CalculBS(0, Si);
-	//cout << "5 , 10, 50 , 100 , 200 , 500 , 1000" << endl;
+	//cout << "10 , 20, 50 , 100 , 200 , 500 , 1000, 2000" << endl;
 	//cout << "error EM" << endl;
-	//cout << m1.ErrorDiscXtEM(5, Si, N) << endl;
-	//cout << m1.ErrorDiscXtEM(10, Si, N) << endl;
-	//cout << m1.ErrorDiscXtEM(50, Si, N) << endl;
-	//cout << m1.ErrorDiscXtEM(100, Si, N) << endl;
-	//cout << m1.ErrorDiscXtEM(200, Si, N) << endl;
-	//cout << m1.ErrorDiscXtEM(500, Si, N) << endl;
-	//cout << m1.ErrorDiscXtEM(1000, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(10, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(20, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(50, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(100, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(200, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(500, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(1000, Si, N) << endl;
+	//cout << m1.ErrorDiscXtEMf(2000, Si, N) << endl;
 	//cout << "error Mils" << endl;
-	//cout << m1.ErrorDiscXtMils(5, Si, N) << endl;
-	//cout << m1.ErrorDiscXtMils(10, Si, N) << endl;
-	//cout << m1.ErrorDiscXtMils(50, Si, N) << endl;
-	//cout << m1.ErrorDiscXtMils(100, Si, N) << endl;
-	//cout << m1.ErrorDiscXtMils(200, Si, N) << endl;
-	//cout << m1.ErrorDiscXtMils(500, Si, N) << endl;
-	//cout << m1.ErrorDiscXtMils(1000, Si, N) << endl;
-	//cout << m1.CalcStHeston(500, Si, 0.2, 0.2, 1, 0.5, -0.70) << endl;
-
-	cout << mod1.CalculBS(T, Si) << endl;
-	cout << mod1.CalcVolImpli(Si, 55, 0.1, 0.5) << endl;
+	//cout << m1.ErrorDiscXtMilsf(10, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(20, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(50, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(100, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(200, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(500, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(1000, Si, N) << endl;
+	//cout << m1.ErrorDiscXtMilsf(2000, Si, N) << endl;
+	double a = m1.MCHeston(10000, 500, Si, 0.04, 0.04, 1, 0.5, -0.70, K);
+	cout << a << endl;
+	cout << mod1.CalculBS(0, Si) << endl;
+	cout << mod1.CalcVolImpli(Si, a, 0.05, K) << endl;
 	cout << "attente" << endl;
 	return 0;
 }
